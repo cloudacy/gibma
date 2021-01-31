@@ -7,9 +7,19 @@ test('runs a basic get request', async (t) => {
 })
 
 test('runs a basic POST request', async (t) => {
-  const res = await request('https://jsonplaceholder.typicode.com/posts', {
-    method: 'POST'
+  const res = await request('https://reqres.in/api/users', {
+    method: 'POST',
+    data: {
+      name: 'morpheus',
+      job: 'leader'
+    }
   })
 
   t.is(res.statusCode, 201)
+})
+
+test('json parse', async (t) => {
+  const res = await request('https://reqres.in/api/users?page=2')
+
+  t.true(res.json !== undefined)
 })
