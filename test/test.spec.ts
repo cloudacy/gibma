@@ -15,7 +15,10 @@ test('runs a basic POST request', async (t) => {
     }
   })
 
+  const data = res.json
+
   t.is(res.statusCode, 201)
+  t.true(data?.name === 'morpheus')
 })
 
 test('json parse', async (t) => {

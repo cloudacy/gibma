@@ -13,7 +13,7 @@ export interface RequestOptions extends HttpsRequestOptions {
   data?: unknown
 }
 
-export async function request<Data extends string | Record<string, unknown>>(url: string | URL, options?: RequestOptions) {
+export async function request<Data extends Record<string, unknown>>(url: string | URL, options?: RequestOptions) {
   return new Promise<Response<Data>>((resolve, reject) => {
     const req = httpsRequest(url, options || {})
   
