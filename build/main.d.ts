@@ -10,5 +10,5 @@ export interface RequestOptions extends HttpsRequestOptions {
     /** Request data written to POST and PUT requests */
     data?: unknown;
 }
-export declare function request<Data extends Record<string, unknown>>(url: string | URL, options?: RequestOptions): Promise<Response<Data>>;
+export declare function request<Data = Record<string, unknown>>(url: string | URL, options?: RequestOptions): Promise<Response<Data>>;
 export {};
