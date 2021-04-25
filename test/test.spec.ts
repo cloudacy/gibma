@@ -1,4 +1,4 @@
-import {request} from '../src/main'
+import { request } from '../src/main'
 import test from 'ava'
 
 test('runs a basic get request', async (t) => {
@@ -15,7 +15,7 @@ test('runs a basic POST request', async (t) => {
     }
   })
 
-  const data = res.json
+  const data = res.json()
 
   t.is(res.statusCode, 201)
   t.true(data?.name === 'morpheus')
@@ -24,5 +24,5 @@ test('runs a basic POST request', async (t) => {
 test('json parse', async (t) => {
   const res = await request('https://reqres.in/api/users?page=2')
 
-  t.true(res.json !== undefined)
+  t.true(res.json() !== undefined)
 })

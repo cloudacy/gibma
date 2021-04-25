@@ -13,24 +13,27 @@ async function request(url, options) {
             });
             res.on('end', () => {
                 res.data = chunk;
+                resolve(res);
+            });
+            res.json = () => {
+                if (res.data === undefined) {
+                    return null;
+                }
                 try {
                     const contentType = content_type_1.parse(res);
                     if (contentType.type === 'application/json') {
                         try {
-                            res.json = JSON.parse(res.data);
-                            resolve(res);
-                            return;
+                            return JSON.parse(res.data);
                         }
                         catch (e) {
-                            reject(e);
+                            throw new Error(`JSON could not be parsed (${e}). Original data: ${res.data}`);
                         }
                     }
                 }
                 catch (e) {
                     console.info(`Content type is missing in response. (${url})`, e);
                 }
-                resolve(res);
-            });
+            };
         });
         req.on('error', (err) => {
             reject(err);

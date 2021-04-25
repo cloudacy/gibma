@@ -1,11 +1,11 @@
-import {URL} from 'url'
-import {IncomingMessage} from 'http'
-import {request as httpsRequest, RequestOptions as HttpsRequestOptions} from 'https'
-import {parse as parseContentType} from 'content-type'
+import { URL } from 'url'
+import { IncomingMessage } from 'http'
+import { request as httpsRequest, RequestOptions as HttpsRequestOptions } from 'https'
+import { parse as parseContentType } from 'content-type'
 
 interface Response<Data> extends IncomingMessage {
   data?: string
-  json?: Data
+  json: () => Data | null
 }
 
 export interface RequestOptions extends HttpsRequestOptions {
@@ -16,7 +16,7 @@ export interface RequestOptions extends HttpsRequestOptions {
 export async function request<Data extends Record<string, unknown>>(url: string | URL, options?: RequestOptions) {
   return new Promise<Response<Data>>((resolve, reject) => {
     const req = httpsRequest(url, options || {})
-  
+
     req.on('response', (res: Response<Data>) => {
       let chunk = ''
       res.on('data', (data: string) => {
@@ -26,24 +26,28 @@ export async function request<Data extends Record<string, unknown>>(url: string 
       res.on('end', () => {
         res.data = chunk
 
+        resolve(res)
+      })
+
+      res.json = () => {
+        if (res.data === undefined) {
+          return null
+        }
+
         try {
           const contentType = parseContentType(res)
 
           if (contentType.type === 'application/json') {
             try {
-              res.json = JSON.parse(res.data)
-              resolve(res)
-              return
+              return JSON.parse(res.data)
             } catch (e) {
-              reject(e)
+              throw new Error(`JSON could not be parsed (${e}). Original data: ${res.data}`)
             }
           }
         } catch (e) {
           console.info(`Content type is missing in response. (${url})`, e)
         }
-
-        resolve(res)
-      })
+      }
     })
 
     req.on('error', (err) => {

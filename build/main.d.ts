@@ -4,7 +4,7 @@ import { IncomingMessage } from 'http';
 import { RequestOptions as HttpsRequestOptions } from 'https';
 interface Response<Data> extends IncomingMessage {
     data?: string;
-    json?: Data;
+    json: () => Data | null;
 }
 export interface RequestOptions extends HttpsRequestOptions {
     /** Request data written to POST and PUT requests */
