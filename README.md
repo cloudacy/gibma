@@ -23,7 +23,7 @@ import {request} from 'gibma'
 async function doMyGetRequest() {
   const response = await request('https://reqres.in/api/users', {method: 'GET'})
   const raw = response.data // this returns a string
-  const json = response.json // this returns the parsed json object
+  const json = response.json() // this returns the parsed json object
 }
 
 async function doMyPostRequest() {
@@ -31,8 +31,9 @@ async function doMyPostRequest() {
     method: 'POST', data: {name: 'gibma', job: 'best-job-ever'}
   })
   const raw = response.data // this returns a string
-  const json = response.json // this returns the parsed json object
+  const json = response.json() // this returns the parsed json object
 }
 ```
 
-This returns a customized `IncomingMessage` response which carries the raw data in `data` attribute and the parsed json (if available) in `json` property.
+This returns a customized `IncomingMessage` response which carries the raw data in `data` attribute.
+You can easily get the parsed json (if available) with the `json` function of the `response`.
