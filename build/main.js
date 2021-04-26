@@ -38,7 +38,7 @@ async function request(url, options) {
         req.on('error', (err) => {
             reject(err);
         });
-        if (options?.data) {
+        if (options === null || options === void 0 ? void 0 : options.data) {
             if (typeof options.data === 'object') {
                 req.setHeader('content-type', 'application/json');
                 req.write(JSON.stringify(options.data));
