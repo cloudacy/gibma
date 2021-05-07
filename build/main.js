@@ -5,7 +5,14 @@ const https_1 = require("https");
 const content_type_1 = require("content-type");
 async function request(url, options) {
     return new Promise((resolve, reject) => {
-        const req = https_1.request(url, options || {});
+        let opts = options || {};
+        if (!opts.headers) {
+            opts.headers = {};
+        }
+        if (!Object.keys(opts.headers).find(k => k.toLowerCase() === 'user-agent')) {
+            opts.headers['User-Agent'] = `NodeJS/${process.version}`;
+        }
+        const req = https_1.request(url, opts);
         req.on('response', (res) => {
             let chunk = '';
             res.on('data', (data) => {
