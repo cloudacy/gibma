@@ -15,7 +15,17 @@ export interface RequestOptions extends HttpsRequestOptions {
 
 export async function request<Data = Record<string, unknown>>(url: string | URL, options?: RequestOptions) {
   return new Promise<Response<Data>>((resolve, reject) => {
-    const req = httpsRequest(url, options || {})
+    let opts = options || {}
+
+    if (!opts.headers) {
+      opts.headers = {}
+    }
+
+    if (!Object.keys(opts.headers).find(k => k.toLowerCase() === 'user-agent')) {
+      opts.headers['User-Agent'] = `NodeJS/${process.version}`
+    }
+
+    const req = httpsRequest(url, opts)
 
     req.on('response', (res: Response<Data>) => {
       let chunk = ''
