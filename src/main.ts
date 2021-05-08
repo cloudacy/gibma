@@ -15,17 +15,16 @@ export interface RequestOptions extends HttpsRequestOptions {
 
 export async function request<Data = Record<string, unknown>>(url: string | URL, options?: RequestOptions) {
   return new Promise<Response<Data>>((resolve, reject) => {
-    let opts = options || {}
+    options = options || {}
+    options.headers = options.headers || {}
 
-    if (!opts.headers) {
-      opts.headers = {}
+    // Support only 'User-Agent' (only with this case style) header
+    // See https://developer.mozilla.org/de/docs/Web/HTTP/Headers/User-Agent
+    if (!options.headers['User-Agent']) {
+      options.headers['User-Agent'] = `NodeJS/${process.version}`
     }
 
-    if (!Object.keys(opts.headers).find(k => k.toLowerCase() === 'user-agent')) {
-      opts.headers['User-Agent'] = `NodeJS/${process.version}`
-    }
-
-    const req = httpsRequest(url, opts)
+    const req = httpsRequest(url, options)
 
     req.on('response', (res: Response<Data>) => {
       let chunk = ''
