@@ -1,12 +1,11 @@
 /// <reference types="node" />
 import { URL } from 'url';
-import { IncomingMessage } from 'http';
-import { RequestOptions as HttpsRequestOptions } from 'https';
+import { IncomingMessage, RequestOptions as HttpRequestOptions } from 'http';
 interface Response<Data> extends IncomingMessage {
     data?: string;
     json: () => Data | null;
 }
-export interface RequestOptions extends HttpsRequestOptions {
+export interface RequestOptions extends HttpRequestOptions {
     /** Request data written to POST and PUT requests */
     data?: unknown;
 }

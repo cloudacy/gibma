@@ -1,9 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.request = void 0;
+const url_1 = require("url");
+const http_1 = require("http");
 const https_1 = require("https");
 const content_type_1 = require("content-type");
 async function request(url, options) {
+    // Always parse to a url object because nodejs will do it later instead
+    if (!(url instanceof url_1.URL)) {
+        url = new url_1.URL(url);
+    }
     return new Promise((resolve, reject) => {
         options = options || {};
         options.headers = options.headers || {};
@@ -12,7 +18,8 @@ async function request(url, options) {
         if (!options.headers['User-Agent']) {
             options.headers['User-Agent'] = `NodeJS/${process.version}`;
         }
-        const req = https_1.request(url, options);
+        const requestFn = url.protocol === 'http' ? http_1.request : https_1.request;
+        const req = requestFn(url, options || {});
         req.on('response', (res) => {
             let chunk = '';
             res.on('data', (data) => {
