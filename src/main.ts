@@ -21,6 +21,15 @@ export async function request<Data = Record<string, unknown>>(url: string | URL,
   }
 
   return new Promise<Response<Data>>((resolve, reject) => {
+    options = options || {}
+    options.headers = options.headers || {}
+
+    // Support only 'User-Agent' (only with this case style) header
+    // See https://developer.mozilla.org/de/docs/Web/HTTP/Headers/User-Agent
+    if (!options.headers['User-Agent']) {
+      options.headers['User-Agent'] = `NodeJS/${process.version}`
+    }
+
     const requestFn = (url as URL).protocol === 'http' ? httpRequest : httpsRequest
     const req = requestFn(url, options || {})
 
