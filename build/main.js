@@ -18,7 +18,7 @@ async function request(url, options) {
         if (!options.headers['User-Agent']) {
             options.headers['User-Agent'] = `NodeJS/${process.version}`;
         }
-        const requestFn = url.protocol === 'http' ? http_1.request : https_1.request;
+        const requestFn = url.protocol === 'http:' ? http_1.request : https_1.request;
         const req = requestFn(url, options || {});
         req.on('response', (res) => {
             let chunk = '';
