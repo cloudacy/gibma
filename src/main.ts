@@ -30,7 +30,7 @@ export async function request<Data = Record<string, unknown>>(url: string | URL,
       options.headers['User-Agent'] = `NodeJS/${process.version}`
     }
 
-    const requestFn = (url as URL).protocol === 'http' ? httpRequest : httpsRequest
+    const requestFn = (url as URL).protocol === 'http:' ? httpRequest : httpsRequest
     const req = requestFn(url, options || {})
 
     req.on('response', (res: Response<Data>) => {
