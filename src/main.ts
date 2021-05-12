@@ -1,21 +1,28 @@
-import { URL } from 'url'
-import { IncomingMessage } from 'http'
-import { request as httpsRequest, RequestOptions as HttpsRequestOptions } from 'https'
-import { parse as parseContentType } from 'content-type'
+import {URL} from 'url'
+import {IncomingMessage, RequestOptions as HttpRequestOptions} from 'http'
+import {request as httpRequest} from 'http'
+import {request as httpsRequest} from 'https'
+import {parse as parseContentType} from 'content-type'
 
 interface Response<Data> extends IncomingMessage {
   data?: string
   json: () => Data | null
 }
 
-export interface RequestOptions extends HttpsRequestOptions {
+export interface RequestOptions extends HttpRequestOptions {
   /** Request data written to POST and PUT requests */
   data?: unknown
 }
 
 export async function request<Data = Record<string, unknown>>(url: string | URL, options?: RequestOptions) {
+  // Always parse to a url object because nodejs will do it later instead
+  if (!(url instanceof URL)) {
+    url = new URL(url)
+  }
+
   return new Promise<Response<Data>>((resolve, reject) => {
-    const req = httpsRequest(url, options || {})
+    const requestFn = (url as URL).protocol === 'http' ? httpRequest : httpsRequest
+    const req = requestFn(url, options || {})
 
     req.on('response', (res: Response<Data>) => {
       let chunk = ''
