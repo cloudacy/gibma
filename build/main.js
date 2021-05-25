@@ -21,9 +21,9 @@ async function request(url, options) {
         const requestFn = url.protocol === 'http:' ? http_1.request : https_1.request;
         const req = requestFn(url, options || {});
         req.on('response', (res) => {
-            let chunk = '';
+            let chunk = Buffer.from('');
             res.on('data', (data) => {
-                chunk += data;
+                chunk = Buffer.concat([chunk, data]);
             });
             res.on('end', () => {
                 res.data = chunk;
@@ -37,7 +37,7 @@ async function request(url, options) {
                     const contentType = content_type_1.parse(res);
                     if (contentType.type === 'application/json') {
                         try {
-                            return JSON.parse(res.data);
+                            return JSON.parse(res.data.toString());
                         }
                         catch (e) {
                             throw new Error(`JSON could not be parsed (${e}). Original data: ${res.data}`);

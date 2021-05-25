@@ -2,7 +2,7 @@
 import { URL } from 'url';
 import { IncomingMessage, RequestOptions as HttpRequestOptions } from 'http';
 interface Response<Data> extends IncomingMessage {
-    data?: string;
+    data?: Buffer;
     json: () => Data | null;
 }
 export interface RequestOptions extends HttpRequestOptions {

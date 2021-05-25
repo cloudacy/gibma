@@ -5,7 +5,7 @@ import {request as httpsRequest} from 'https'
 import {parse as parseContentType} from 'content-type'
 
 interface Response<Data> extends IncomingMessage {
-  data?: string
+  data?: Buffer
   json: () => Data | null
 }
 
@@ -34,9 +34,9 @@ export async function request<Data = Record<string, unknown>>(url: string | URL,
     const req = requestFn(url, options || {})
 
     req.on('response', (res: Response<Data>) => {
-      let chunk = ''
-      res.on('data', (data: string) => {
-        chunk += data
+      let chunk: Buffer = Buffer.from('')
+      res.on('data', (data: Buffer) => {
+        chunk = Buffer.concat([chunk, data])
       })
 
       res.on('end', () => {
@@ -55,7 +55,7 @@ export async function request<Data = Record<string, unknown>>(url: string | URL,
 
           if (contentType.type === 'application/json') {
             try {
-              return JSON.parse(res.data)
+              return JSON.parse(res.data.toString())
             } catch (e) {
               throw new Error(`JSON could not be parsed (${e}). Original data: ${res.data}`)
             }
