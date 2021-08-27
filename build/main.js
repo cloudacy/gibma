@@ -34,7 +34,7 @@ async function request(url, options) {
                     return null;
                 }
                 try {
-                    const contentType = content_type_1.parse(res);
+                    const contentType = (0, content_type_1.parse)(res);
                     if (contentType.type === 'application/json') {
                         try {
                             return JSON.parse(res.data.toString());
